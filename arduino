@@ -1,0 +1,40 @@
+#include <Servo.h>
+
+Servo myservo;  // create servo object to control a servo
+
+int pos = 0; // variable to store the servo position
+int led1 = 13;//attach led on digital pin 13
+int led2 = 12;//attach led on digital pin 12
+int incomingByte; // variable to read incoming serial data
+void setup() {
+  myservo.attach(9);// attaches the servo on pin 9 to the servo object
+  Serial.begin(9600);
+  pinMode(led1,OUTPUT);//setting pin 13 as OUTPUT
+  pinMode(led2,OUTPUT);//setting pin 12 as OUTPUT
+  
+}
+
+void loop() {
+  //see if there is incoming data
+  if (Serial.available()>0) {
+    //read the oldest byte in the serial buffer:
+    incomingByte = Serial.read();
+    
+    if (incomingByte == 'H'){ //H is for open lock or mask detected
+       pos = 0;
+       myservo.write(pos); //bring servo to position 0
+       digitalWrite(led1,HIGH);//turn on the GREEN LED
+       delay(010);
+    }
+
+    if (incomingByte == 'L'){ //L is for closed lock or mask not detected
+      pos = 180;
+      myservo.write(pos); //bring servo to position 180
+      digitalWrite(led2,HIGH);//turn on the RED LED
+      delay(010);
+    }
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,LOW); 
+  }
+   
+}
